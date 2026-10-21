@@ -81,6 +81,18 @@ Row set = every wallet that ever interacted with the v1 protocol (bounty creator
 claimants, NFT holders) — 415 wallets. Only **completed** bounties count: cancelled
 (`BountyCancelled`) or never-resolved bounties contribute to neither ETH column.
 
+## Definitions used in this file (so every number is unambiguous)
+
+| Column | Definition | Note |
+|---|---|---|
+| `eth_paid_out_wei` | ETH that actually left the protocol **to that wallet** for completed bounties = `bounty amount - 2.5%` fee | the fee goes to the treasury, so the claimant receives the net figure |
+| `eth_earned_wei` | **gross** value of the bounties the wallet won, fee **not** deducted (a 1 ETH win counts as 1 ETH) | as the bounty specifies |
+| `eth_escrowed_for_completed_bounties_wei` | gross ETH the wallet **escrowed** for its own bounties that later completed | included so the *other* reading of "paid out by wallet" (issuer-side outflow) is answerable from the same file |
+| `nfts_held` | poidh v1 NFTs currently held, **including the 444 held by the v1 contract itself** | the contract's row is present in the file, not silently dropped |
+
+Both readings of "ETH paid out by wallet" are therefore covered in one CSV, and the NFT
+holdings are complete rather than netted out.
+
 ## Findings on the existing submission (claim #8960, and #8970 which carries identical numbers)
 
 Reproduced independently from the chain, not from their file. Both rival CSVs report
