@@ -40,6 +40,7 @@ after payment.
 | [`preview.png`](preview.png) | PNG summary of the full dataset (totals + top wallets) |
 | [`build_csv.py`](build_csv.py) | the exact script that produces the full CSV from the raw contract logs |
 | [`make_preview.py`](make_preview.py) | the script that renders `preview.png` |
+| [`verify_ledger.py`](verify_ledger.py) | **verifier** - recomputes the ledger from the Arbitrum chain and diffs any candidate CSV against it, so every number here can be checked without trusting the submitter |
 
 ## Source of the data
 
@@ -85,7 +86,7 @@ claimants, NFT holders) — 415 wallets. Only **completed** bounties count: canc
 Reproduced independently from the chain, not from their file. Both rival CSVs report
 `eth_paid_out` **and** `eth_earned` as the same gross total `3.726923002 ETH`.
 
-1. **`eth_paid_out` is 0 for 157 wallets that demonstrably received ETH.** For example
+1. **`eth_paid_out` is 0 for 159 wallets that demonstrably received ETH.** For example
    `0x218a97866167932c58A70DC263f27e5882944446` received `0.749531250 ETH`
    (gross `0.76875` minus the 2.5 % fee) and the rival row reads
    `eth_paid_out = 0`, `eth_earned = 0.76875`. A reader of that column would conclude the
@@ -127,6 +128,14 @@ The two ETH columns reconcile to the protocol fee **to the wei**.
 ## Reproduce
 
 ```bash
-python3 build_csv.py       # from the raw log dump
-python3 make_preview.py    # renders preview.png
+python3 build_csv.py                    # from the raw log dump
+python3 make_preview.py                 # renders preview.png
+
+# verify anyone else's CSV against the chain (pulls the logs itself):
+python3 verify_ledger.py candidate.csv
+python3 verify_ledger.py candidate.csv 0x218a97866167932c58A70DC263f27e5882944446
 ```
+
+`verify_ledger.py` needs no arguments other than an optional CSV path: it re-reads the
+contract logs from Arbitrum, recomputes every wallet row, and prints the reconciliation
+plus a per-wallet diff against the CSV you point it at.
