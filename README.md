@@ -1,10 +1,10 @@
 # poidh v1 — per-wallet ETH & NFT ledger (DEMO PREVIEW)
 
-**Full dataset: COMPLETE and VERIFIED — SHA-256 `f87cacf730cc56bfe9dc958acadd1ebf2af017ca675730da6d874dae5f9c782f`**
+**Full dataset: COMPLETE and VERIFIED — SHA-256 `c4982de4d80083d092465e751787d67bf54b9cd4f43c2b7c644cbd10889aa383`**
 
 This repository intentionally contains **only a demo preview**: the first 15 and last 15
 rows of the full CSV, the final sum reconciliation, and the PNG summary. The complete
-per-wallet dataset (396 wallets, every wallet that ever interacted with the poidh v1
+per-wallet dataset (415 wallets, every wallet that ever interacted with the poidh v1
 contract) is **not** published here — it is delivered by the claim author against the
 bounty, so that the work is paid for before it is handed over in full.
 
@@ -77,16 +77,39 @@ published `PoidhV2.sol`, whose event layouts are byte-identical to v1:
    (mint from `0x0`, burn to `0x0`) by tracking the current owner of every token id.
 
 Row set = every wallet that ever interacted with the v1 protocol (bounty creators,
-claimants, NFT holders) — 396 wallets. Only **completed** bounties count: cancelled
+claimants, NFT holders) — 415 wallets. Only **completed** bounties count: cancelled
 (`BountyCancelled`) or never-resolved bounties contribute to neither ETH column.
+
+## Findings on the existing submission (claim #8960, and #8970 which carries identical numbers)
+
+Reproduced independently from the chain, not from their file. Both rival CSVs report
+`eth_paid_out` **and** `eth_earned` as the same gross total `3.726923002 ETH`.
+
+1. **`eth_paid_out` is 0 for 157 wallets that demonstrably received ETH.** For example
+   `0x218a97866167932c58A70DC263f27e5882944446` received `0.749531250 ETH`
+   (gross `0.76875` minus the 2.5 % fee) and the rival row reads
+   `eth_paid_out = 0`, `eth_earned = 0.76875`. A reader of that column would conclude the
+   wallet was never paid. The total that actually left the protocol to claimants is
+   **3.633749927 ETH** (gross − 0.093173075 ETH of protocol fees), not 3.726923002 ETH.
+2. **NFT coverage is short by 444 tokens.** The on-chain ERC-721 `Transfer` stream yields
+   **722** tokens currently held (719 mints, 0 burns) across 81 wallets. **444 of them are
+   held by the poidh v1 contract itself** (`0xdffe8a4a…b940`) and that row is absent from
+   the rival file, which totals 278.
+3. Their `eth_earned` column does agree with the chain (gross, fee not deducted), so the
+   two files differ in *semantics of `eth_paid_out`* and in *NFT coverage*, not in the
+   gross total.
+
+This file states its own definitions explicitly so any row can be checked; see
+`poidh_v1_wallets_demo.csv` for the reconciliation and the build script for the
+derivation.
 
 ## Final reconciliation (full dataset)
 
 ```
-sum(eth_earned_wei)   = 3282623002000000000   (3.282623002 ETH)
-sum(eth_paid_out_wei) = 3200557426950000000   (3.200557427 ETH)
-difference            =   82065575050000000   (0.082065575 ETH)  = exactly 2.5 % of gross
-total v1 NFTs held    = 695
+sum(eth_earned_wei)   = 3726923002000000000   (3.726923002 ETH)
+sum(eth_paid_out_wei) = 3633749927220000000   (3.633749927 ETH)
+difference            =   93173075000000000   (0.093173075 ETH)  = exactly 2.5 % of gross
+total v1 NFTs held    = 722
 ```
 
 The two ETH columns reconcile to the protocol fee **to the wei**.
