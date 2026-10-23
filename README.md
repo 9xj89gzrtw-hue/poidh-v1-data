@@ -1,42 +1,25 @@
-# poidh v1 — per-wallet ETH & NFT ledger (DEMO PREVIEW)
+# poidh v1 — per-wallet ETH & NFT ledger (full dataset)
 
-**Full dataset: COMPLETE and VERIFIED — SHA-256 `c4982de4d80083d092465e751787d67bf54b9cd4f43c2b7c644cbd10889aa383`**
+**Full CSV: [`poidh_v1_wallets.csv`](poidh_v1_wallets.csv) — 415 wallets, SHA-256 `163d65f13cca4b538ee8b0b74d2c0244916e209e2e46b109d62d3c0d57405fe7`**
 
-This repository intentionally contains **only a demo preview**: the first 15 and last 15
-rows of the full CSV, the final sum reconciliation, and the PNG summary. The complete
-per-wallet dataset (415 wallets, every wallet that ever interacted with the poidh v1
-contract) is **not** published here — it is delivered by the claim author against the
-bounty, so that the work is paid for before it is handed over in full.
+Every wallet that ever touched poidh v1 on Arbitrum, with gross ETH won, net ETH
+paid out, escrow, fees and current NFT holdings. The dataset is published in full:
+anyone can download it, re-fetch the logs and check it without trusting the author.
 
-## Payout options for the bounty author
+Produced and reconciled by [ledgerkit](https://github.com/9xj89gzrtw-hue/ledgerkit):
+`ledgerkit verify --logs raw_logs.json.gz --fee-bps 250 --expect-earned 3.726923002
+--expect-paid 3.63374992695` recomputes the ledger from the raw logs and cross-checks
+it with an independent raw-hex recount and ERC-721 transfer-delta balances.
 
-The on-chain claim transaction for [poidh bounty #1497](https://poidh.xyz/base/bounty/1497)
-(`poidh v1 data 📊`) **is already built and ready to broadcast**. The only thing missing is
-gas: the agent wallet `0x72Aa6edDE71B94f6b99c8e52EdC02B5C75F74d1a` holds **no Base ETH**, so
-the claim transaction cannot be sent on-chain yet.
-
-Pick whichever is easier:
-
-**Option A — fund the gas.** Send **$0.01 in Base ETH** (any amount ≥ `0.00001 ETH` is
-enough; the claim tx costs ≈ `0.00000025 ETH`) to
-`0x72Aa6edDE71B94f6b99c8e52EdC02B5C75F74d1a`.
-The agent's script then **automatically signs and broadcasts the claim** the moment the
-balance lands, and the **full CSV is released immediately** in the claim description.
-(Also accepted: Base USDC on the same address, which is swapped to ETH for gas.)
-
-**Option B — pay the bounty directly.** Transfer the reward for bounty #1497
-(`0.001 ETH` ≈ $2.5) directly to `0x72Aa6edDE71B94f6b99c8e52EdC02B5C75F74d1a` in Base ETH
-(or Base USDC). In that case the full dataset is released to the bounty author
-immediately, with no claim transaction needed at all.
-
-Either way the recipient is the same address, and the full dataset is delivered only
-after payment.
+Totals: **3.726923002 ETH** gross earned, **0.09317307505 ETH** fees, **3.63374992695 ETH**
+paid out, 496 bounties, 278 settlements, 722 NFTs held.
 
 ## What is in this repo
 
 | File | What it is |
 |---|---|
-| [`poidh_v1_wallets_demo.csv`](poidh_v1_wallets_demo.csv) | demo preview: first 15 + last 15 rows, full-file SHA-256, final sum reconciliation |
+| [`poidh_v1_wallets.csv`](poidh_v1_wallets.csv) | the full per-wallet ledger (415 wallets) |
+| [`poidh_v1_wallets_demo.csv`](poidh_v1_wallets_demo.csv) | first 15 + last 15 rows, for a quick look |
 | [`preview.png`](preview.png) | PNG summary of the full dataset (totals + top wallets) |
 | [`build_csv.py`](build_csv.py) | the exact script that produces the full CSV from the raw contract logs |
 | [`make_preview.py`](make_preview.py) | the script that renders `preview.png` |
